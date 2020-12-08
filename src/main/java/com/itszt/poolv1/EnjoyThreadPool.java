@@ -32,6 +32,7 @@ public class EnjoyThreadPool {
      *
      */
     public void submitTask(CustomTask target){
+
         /**
          * step1 应该考虑担当前线程池当中的核心线程数有么有达到上限
          */
@@ -42,7 +43,7 @@ public class EnjoyThreadPool {
             set.add(enjoyNode);
             enjoyNode.start();
             //log.debug("核心线程数还有空闲 直接执行不需要去队列当中 new t");
-        }else{
+        }else {
             log.debug("核心线程数達到上限 应该让这个task去队列当中[{}]",target.getName());
             enjoyQueue.put(target);
         }

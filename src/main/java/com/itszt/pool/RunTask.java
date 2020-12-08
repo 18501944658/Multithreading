@@ -14,6 +14,6 @@ public class RunTask implements Runnable {
 
     @Override
     public void run() {
-        log.debug("我是任务{}-----执行完成！！！", taskname);
+        log.debug("我是任务{}-----我执行完成！！！-------------------------", taskname);
     }
 }

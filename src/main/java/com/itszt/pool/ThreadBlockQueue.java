@@ -33,11 +33,13 @@ public class ThreadBlockQueue {
      **/
     private Integer queueSize;
 
-    Deque<RunTask> deque = new ArrayDeque();
+   private Deque<RunTask> deque = new ArrayDeque();
 
     public ThreadBlockQueue(Integer queueSize) {
         this.queueSize = queueSize;
     }
+
+
 
 
     /**

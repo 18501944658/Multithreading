@@ -3,10 +3,8 @@ package com.itszt.pool;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.HashSet;
-import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,8 +29,11 @@ public class ThreadPoolNode {
     private Integer coreSize;
 
     /**空闲线程数**/
-    private Integer MaxSize;
-
+    private Integer maxSize;
+    /**最大空闲时间**/
+    private Integer second;
+    /**时间单位**/
+    private TimeUnit  timeUnit;
     /**核心线程池**/
     private HashSet<RunThreadNode> coreSet;
 
@@ -43,7 +44,7 @@ public class ThreadPoolNode {
     public ThreadPoolNode(Integer coreSize, Integer maxSize, ThreadBlockQueue blockQueue) {
         this.coreSet= new HashSet<RunThreadNode>();
         this.coreSize = coreSize;
-        MaxSize = maxSize;
+        this.maxSize = maxSize;
         this.blockQueue = blockQueue;
     }
 
@@ -60,10 +61,11 @@ public class ThreadPoolNode {
                 /****/
                 runThreadNode.start();
             }else {
+                /**核心线程池已满,判断阻塞队列未满**/
                 log.debug("当前线程池中核心线程池已满,{},任务{}需阻塞队列等待",coreSet.size(),runTask.getTaskname());
                 /**核心线程已满,入队列**/
                 blockQueue.put(runTask);
-            }
+      }
         } finally {
    lock.unlock();
         }

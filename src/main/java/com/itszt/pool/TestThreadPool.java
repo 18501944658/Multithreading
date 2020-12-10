@@ -2,8 +2,8 @@ package com.itszt.pool;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,25 +17,25 @@ public class TestThreadPool {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main4(String[] args) {
         AtomicInteger atomicInteger = new AtomicInteger(0);
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 4, 1000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>()
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 4, 1000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(2)
                 , (runnable) -> {
             return new ThreadFactoryPool("t" + atomicInteger.incrementAndGet()).newThread(runnable);
-        });
-        for (int i = 0; i < 10; i++) {
+        }, new ThreadPoolExecutor.CallerRunsPolicy());
+        for (int i = 1; i < 11; i++) {
             threadPoolExecutor.submit(() -> {
-                log.debug("当前线程{}正在执行任务------",Thread.currentThread().getName());
-
+                log.debug("当前线程正在执行任务------");
             });
         }
     }
 
+
     public static void main3(String[] args) {
         int count1 = 0;
         retry:
-        for (int i=0; i<3; i++) {
-            for (int j=0; j<5; j++) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 5; j++) {
                 count1++;
                 if (count1 == 4) {
                     break retry;
@@ -47,8 +47,8 @@ public class TestThreadPool {
 
         int count = 0;
         retry:
-        for (int i=0; i<3; i++) {
-            for (int j=0; j<5; j++) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 5; j++) {
                 count++;
                 if (count == 4) {
                     continue retry;
@@ -60,7 +60,25 @@ public class TestThreadPool {
     }
 
 
+    public static void main(String[] args) {
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 3, 0,
+                TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(2),
+                (runnable) -> {
+                    return new ThreadFactoryPool("t" + atomicInteger.incrementAndGet()).newThread(runnable);
+                }, new ThreadPoolExecutor.CallerRunsPolicy());
+        AtomicInteger y = new AtomicInteger(0);
 
+        for (int i = 0; i < 5; i++) {
+            log.debug("当前开始执行任务{}",(i+1));
+            threadPoolExecutor.execute(() -> {
+                log.debug("当前线程{}正在执行任务-{}", Thread.currentThread().getName(), y.incrementAndGet());
+//                System.out.println("当前正在执行任务-----{}" + y.incrementAndGet());
+            });
+        }
+
+    }
 
 
 }

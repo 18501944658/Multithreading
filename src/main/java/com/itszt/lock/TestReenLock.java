@@ -46,24 +46,24 @@ public class TestReenLock {
             }
 
         });
-        TimeUnit.SECONDS.sleep(1);
-        Thread t3 = new Thread(() -> {
-            lock.lock();
-            try {
-                try {
-                    TimeUnit.SECONDS.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                log.debug("t2获取锁,正在执行任务--------------");
-            } finally {
-                lock.unlock();
-                log.debug("t2释放锁,任务执行完成--------------");
-            }
-
-        });
+//        TimeUnit.SECONDS.sleep(1);
+//        Thread t3 = new Thread(() -> {
+//            lock.lock();
+//            try {
+//                try {
+//                    TimeUnit.SECONDS.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                log.debug("t2获取锁,正在执行任务--------------");
+//            } finally {
+//                lock.unlock();
+//                log.debug("t2释放锁,任务执行完成--------------");
+//            }
+//
+//        });
         t1.start();
         t2.start();
-        t3.start();
+//        t3.start();
     }
 }

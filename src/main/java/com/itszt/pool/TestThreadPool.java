@@ -60,7 +60,7 @@ public class TestThreadPool {
     }
 
 
-    public static void main(String[] args) {
+    public static void main5(String[] args) {
         AtomicInteger atomicInteger = new AtomicInteger(0);
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(2, 3, 0,
                 TimeUnit.MILLISECONDS,
@@ -75,7 +75,7 @@ public class TestThreadPool {
             log.debug("当前开始执行任务{}",(i));
             threadPoolExecutor.execute(() -> {
                 try {
-                    TimeUnit.SECONDS.sleep(1000000);
+                    TimeUnit.SECONDS.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -86,4 +86,28 @@ public class TestThreadPool {
     }
 
 
+    public static void main(String[] args) {
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(0, 1, 0,
+                TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(2),
+                (runnable) -> {
+                    return new ThreadFactoryPool("t" + atomicInteger.incrementAndGet()).newThread(runnable);
+                }, new ThreadPoolExecutor.CallerRunsPolicy());
+
+        AtomicInteger y = new AtomicInteger(0);
+
+        for (int i = 1; i <=5; i++) {
+            log.debug("当前开始执行任务{}",(i));
+            threadPoolExecutor.execute(() -> {
+                try {
+                    TimeUnit.SECONDS.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                log.debug("当前线程{}正在执行任务-{}", Thread.currentThread().getName(), y.incrementAndGet());
+            });
+        }
+
+    }
 }
